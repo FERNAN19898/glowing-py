@@ -1,0 +1,10 @@
+{
+    "wled_ip": "192.168.18.14",
+    "wled_port": 4048,
+    "led_count": 38,
+    
+    "mappings": {
+        "notepad.exe": "default_plugin",
+        "left4dead2.exe": "l4d2_health"
+    }
+}

@@ -1,0 +1,7 @@
+mss
+numpy
+opencv-python
+psutil
+pywin32
+tabulate
+pynput
