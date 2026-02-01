@@ -2,19 +2,21 @@
 
 [![Python](https://img.shields.io/badge/python-3.11-blue)](https://www.python.org/) [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE) [![GitHub stars](https://img.shields.io/github/stars/FERNAN19898/glowing-py?style=social)](https://github.com/FERNAN19898/glowing-py/stargazers)
 
-**GlowingPy** is a dynamic PC LED strip controller that reacts to games, music, and custom choreography. Your LEDs now **dance, flash, and react in real-time**.
+**GlowingPy** is a dynamic LED strip controller that reacts to games, music, and custom choreography. Your LEDs now **dance, flash, and react in real-time**.
 
 ---
 
-## 🎮 Supported Games & Effects
+## 🎮 Planned compatible games and effects
 
 | ID | Game | Mode | Description | Status |
 |----|------|------|-------------|--------|
-| 2 | Friday Night Funkin' | Key Sync | LEDs react to **D, F, J, K** inputs | ✅ Working |
+| X | Friday Night Funkin' | Key Sync | LEDs react to **D, F, J, K** inputs | 🛠️ In progress |
 | X | Left 4 Dead 2 | Health Bar | Visualizes player health on LEDs | 🛠️ In progress |
 | X | Left 4 Dead 2 | Special Events | LED orchestration for **Tank / Special Infected** | 🛠️ In progress |
 | X | Portal 2 | Portal Tracker | LED color shows **last portal placed** | 🛠️ In progress |
 | X | Custom Songs | Choreography | Detect song via Stereo Mix & sync LED sequences | 🛠️ In progress |
+
+More in the future!
 
 ---
 
@@ -84,13 +86,36 @@ plugins/
 Each plugin must implement:
 
 ```python
-class Plugin:
-    def __init__(self, ddp_client):
+from ..base_plugin import BasePlugin
+
+class Plugin(BasePlugin):
+    """
+    Example Plugin Template.
+    Copy this folder and rename it to create a new plugin.
+    """
+
+    async def setup(self) -> None:
+        """
+        Called once when the plugin starts.
+        Initialize variables or states here.
+        """
         pass
 
-    async def run(self):
+    async def loop(self) -> None:
+        """
+        Called repeatedly while the plugin is running.
+        Implement animation logic here.
+        """
+        pass
+
+    async def on_plugin_stopped(self) -> None:
+        """
+        Called once when the plugin stops.
+        Use this to reset LEDs or cleanup tasks.
+        """
         pass
 ```
+See plugins/_template/_template.py for more inforamtion!
 
 ---
 
