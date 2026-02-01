@@ -1,23 +1,21 @@
 import os
 
 class Logger():
-    def __init__(self):
-        pass
     
-    def info(self, message: str):
+    def info(message: str):
         print(f"[INFO]: {message}")
     
-    def error(self, message: str):
+    def error(message: str):
         print(f"[ERROR]: {message}")
     
-    def log(self, message: str):
+    def log(message: str):
         print(f"[LOG]: {message}")
     
-    def debug(self, message: str):
+    def debug(message: str):
         print(f"[DEBUG]: {message}")
     
-    def warning(self, message: str):
+    def warning(message: str):
         print(f"[WARNING]: {message}")
     
-    def clear(self):
+    def clear():
         os.system('cls' if os.name == 'nt' else 'clear')

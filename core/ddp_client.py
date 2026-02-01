@@ -1,9 +1,10 @@
 import socket
 
 class DDPClient:
-    def __init__(self, ip, port=4048):
+    def __init__(self, ip, port=4048, total_leds = 100):
         self.ip: str = ip
         self.port: int = port
+        self.led_count: int = total_leds
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.sequence = 0
 

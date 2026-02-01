@@ -4,19 +4,17 @@ import asyncio
 import importlib
 
 from tabulate import tabulate
-from core.own_logger import Logger
+from core.own_logger import Logger as log
 from core.ddp_client import DDPClient
 from pynput.keyboard import Listener, Key
 from plugins.registered_plugins import registered_plugins
-
-log = Logger()
 
 class GlowingPyEngine:
     def __init__(self):
         log.info("Starting GlowingPy Engine...")
 
         self.config = self._load_config()
-        self.ddp = DDPClient(self.config["wled_ip"])
+        self.ddp = DDPClient(self.config["wled_ip"], self.config["wled_port"], self.config["led_count"])
         self.led_count = self.config["led_count"]
 
         self.loop_task = None
@@ -24,8 +22,10 @@ class GlowingPyEngine:
         
         self.state = "MENU"
         self.stop_plugin_requested = False
+        self._init_keyboard_listener()
 
-        # Setup F7 keyboard listener to stop current plugin
+    def _init_keyboard_listener(self):
+        
         def _on_press(key):
             try:
                 if key == Key.f7 and self.state != "MENU":
@@ -48,28 +48,25 @@ class GlowingPyEngine:
             return json.load(f)
 
     async def setup(self):
-        await self.start()  # Esperar a que termine el init para arrancar el loop
+        await self.start()
 
         async def setup_loop():
             while True:
                 await self.loop()
 
         self.loop_task = asyncio.create_task(setup_loop())
-        while not self.loop_task.done():
-            await asyncio.sleep(0.1)
+        await self.loop_task
 
     async def load_plugin_by_name(self, name: str):
         # Stop any running plugin first
         await self.stop_running_plugin()
 
-        log.info(f"Loading Plugin: {name}...")
         try:
             module = importlib.import_module(f"plugins.{name}.{name}")
             importlib.reload(module)
 
             cur_plugin_instance = module.Plugin(self.ddp)
-            self.cur_plugin_task = asyncio.create_task(cur_plugin_instance.run())
-            log.debug("loaded")
+            self.cur_plugin_task = asyncio.create_task(cur_plugin_instance.run(name))
             self.state = "RUNNING"
 
         except ImportError:
@@ -161,14 +158,13 @@ class GlowingPyEngine:
         if self.state == "MENU":
             await asyncio.sleep(0.5)
             return
-        
+
         if self.stop_plugin_requested:
             self.stop_plugin_requested = False
             await self.stop_running_plugin()
             await self.start()
 
         await asyncio.sleep(0.1)
-
 
 if __name__ == "__main__":
     try:
